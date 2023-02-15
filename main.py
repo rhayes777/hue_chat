@@ -53,7 +53,7 @@ Brightness is from 0 to 254
 Two JSONs should be returned in a list. Each JSON should contain a color and a light_id. 
 The light ids are 0 and 1. The color relates a key "color" to a dictionary with the keys "hue", "saturation" and "brightness". 
 
-Give me a JSON that is purple for light 0 and orange for light 1.
+Give me a JSON that is has a warm color for light 0 and a cool color for light 1.
 
 """
 
@@ -72,7 +72,6 @@ completion = openai.Completion.create(
 )
 
 response = completion.choices[0].text
-# Print the response
 print(response)
 
 bridge = get_bridge()
