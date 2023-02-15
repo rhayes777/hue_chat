@@ -29,4 +29,10 @@ def get_bridge():
             print("Press the button on the bridge")
             time.sleep(2)
 
-print(get_bridge())
+bridge = get_bridge()
+
+bridge.lights[0].hue = 21845
+
+# for light in bridge.lights:
+#     print(light.name)
+#     print(light.light_id)
