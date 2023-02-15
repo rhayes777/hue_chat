@@ -50,9 +50,10 @@ blue is 43690
 Saturation is from 0 to 254
 Brightness is from 0 to 254
 
-I want responses to be in the form of a JSON with keys "hue", "saturation" and "brightness".
+Two JSONs should be returned in a list. Each JSON should contain a color and a light_id. 
+The light ids are 0 and 1. The color relates a key "color" to a dictionary with the keys "hue", "saturation" and "brightness". 
 
-Give me the JSON for baby blue. 
+Give me a JSON that is purple for light 0 and orange for light 1.
 
 """
 
@@ -76,7 +77,9 @@ print(response)
 
 bridge = get_bridge()
 
-light = bridge.lights[0]
-
-for key, value in json.loads(response).items():
-    setattr(light, key, value)
+for command in json.loads(response):
+    light_id = command["light_id"]
+    color = command["color"]
+    light = bridge.lights[light_id]
+    for key, value in color.items():
+        setattr(light, key, value)
