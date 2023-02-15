@@ -54,7 +54,6 @@ Two JSONs should be returned in a list. Each JSON should contain a color and a l
 The light ids are 0 and 1. The color relates a key "color" to a dictionary with the keys "hue", "saturation" and "brightness". 
 
 Give me a JSON that is has a warm color for light 0 and a cool color for light 1.
-
 """
 
 # Set the maximum number of tokens to generate in the response
