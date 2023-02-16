@@ -1,6 +1,7 @@
 import json
 import os
 import time
+from json import JSONDecodeError
 from pathlib import Path
 
 import discoverhue
@@ -10,7 +11,10 @@ import phue
 openai.api_key = os.environ["OPENAI_API_KEY"]
 
 
-def find_ip():
+def find_ip() -> str:
+    """
+    Find the IP address of the hue bridge
+    """
     bridges = discoverhue.find_bridges()
     url = list(bridges.values())[0]
     return url.split(":")[1].strip("/")
@@ -49,9 +53,19 @@ Saturation is from 0 to 254
 Brightness is from 0 to 254
 
 Two JSONs should be returned in a list. Each JSON should contain a color and a light_id. 
-The light ids are 0 and 1. The color relates a key "color" to a dictionary with the keys "hue", "saturation" and "brightness". 
+The light ids are 0 and 1. 
+The color relates a key "color" to a dictionary with the keys "hue", "saturation" and "brightness". 
 
-Give me a list of JSONs to configure the lights as I describe below. Give only the JSON and no additional characters.
+Give me a list of JSONs to configure the lights in response to the instructions below. 
+Give only the JSON and no additional characters. 
+Do not attempt to complete the instruction that I give.
+Only give one JSON for each light. 
+If there are conflicting instructions use the later instruction.
+
+Instructions such as 'lighter' may refer to reducing saturation or increasing brightness.
+Instructions such as 'darker' may refer to increasing saturation or reducing brightness.
+
+Only include a single JSON.
 """
 
 
@@ -81,7 +95,7 @@ class ChatBot:
         self._messages.append(message)
         message = "\n".join(self._messages)
         prompt = f"{self.header}\n{message}"
-        response = openai.Completion.create(
+        text = openai.Completion.create(
             engine=self.engine,
             prompt=prompt,
             max_tokens=self.max_tokens,
@@ -90,19 +104,27 @@ class ChatBot:
             frequency_penalty=self.frequency_penalty,
             presence_penalty=self.presence_penalty,
         ).choices[0].text.strip(" .\t\n")
-        print(response)
-        return json.loads(response)
+        try:
+            return json.loads(text)
+        except JSONDecodeError:
+            print(text)
+            self._messages.pop()
+            raise
 
 
 bot = ChatBot(header=header)
-
-response = bot("I want the lights to be red and green")
-
 bridge = get_bridge()
 
-for command in response:
-    light_id = command["light_id"]
-    color = command["color"]
-    light = bridge.lights[light_id]
-    for key, value in color.items():
-        setattr(light, key, value)
+while True:
+    try:
+        response = bot(input("What should I do with the lights? "))
+    except JSONDecodeError:
+        print("Oops something went wrong. Try again.")
+        continue
+
+    for command in response:
+        light_id = command["light_id"]
+        color = command["color"]
+        light = bridge.lights[light_id]
+        for key, value in color.items():
+            setattr(light, key, value)
