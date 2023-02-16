@@ -64,12 +64,6 @@ Give me a list of JSONs to configure the lights in response to the instructions 
 Give only the JSON and no additional characters. 
 Do not attempt to complete the instruction that I give.
 Only give one JSON for each light. 
-If there are conflicting instructions use the later instruction.
-
-Instructions such as 'lighter' may refer to reducing saturation or increasing brightness.
-Instructions such as 'darker' may refer to increasing saturation or reducing brightness.
-
-Only include a single JSON.
 """
 
 
@@ -109,8 +103,6 @@ class ChatBot:
 
         self.header = header
 
-        self._messages = []
-
     def __call__(self, message: str) -> List[dict]:
         """
         Submit the header and all previous messages to the chat bot and return the response.
@@ -125,8 +117,6 @@ class ChatBot:
         The response from OpenAI as a list of dictionaries containing the color and light_id
         for each light.
         """
-        self._messages.append(message)
-        message = "\n".join(self._messages)
         prompt = f"{self.header}\n{message}"
         text = openai.Completion.create(
             engine=self.engine,
@@ -141,7 +131,6 @@ class ChatBot:
             return json.loads(text)
         except JSONDecodeError:
             print(text)
-            self._messages.pop()
             raise
 
 
