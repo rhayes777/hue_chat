@@ -25,6 +25,28 @@ Give me a list of JSONs to configure the lights in response to the instructions 
 Give only the JSON and no additional characters. 
 Do not attempt to complete the instruction that I give.
 Only give one JSON for each light. 
+Do not provide an explanation.
+Give the two JSONs in a list. 
+
+Here is an example output:
+[
+  {
+    "light_id": 0,
+    "color": {
+      "hue": 43690,
+      "saturation": 254,
+      "brightness": 254
+    }
+  },
+  {
+    "light_id": 1,
+    "color": {
+      "hue": 43690,
+      "saturation": 254,
+      "brightness": 254
+    }
+  }
+]
 """
 
 bot = ChatBot(header=HEADER)

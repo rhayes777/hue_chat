@@ -69,6 +69,6 @@ class ChatBot:
 
 
 def trim(s):
-    s = re.sub(r"^[a-zA-Z \n:`]+", "", s)
-    s = re.sub(r"[a-zA-Z \n:`]+$", "", s)
+    s = re.sub(r"^[a-zA-Z \n:`.,]+", "", s)
+    s = re.sub(r"[a-zA-Z \n:`.,]+$", "", s)
     return s
