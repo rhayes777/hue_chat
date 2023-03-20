@@ -62,13 +62,13 @@ class ChatBot:
             "content": content,
         })
         try:
-            return json.loads(content)
+            return json.loads(trim(content))
         except JSONDecodeError:
             print(content)
             raise
 
 
-def remove_alpha_from_ends(s):
+def trim(s):
     s = re.sub(r"^[a-zA-Z \n:`]+", "", s)
     s = re.sub(r"[a-zA-Z \n:`]+$", "", s)
     return s
