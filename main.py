@@ -71,7 +71,7 @@ Only give one JSON for each light.
 class ChatBot:
     def __init__(
             self,
-            engine="text-davinci-003",
+            engine="gpt-3.5-turbo",
             max_tokens=1024,
             temperature=0.1,
             top_p=1,
